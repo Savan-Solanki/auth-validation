@@ -7,10 +7,11 @@ import {
   sendResetSuccessEmail,
   sendVerificationEmail,
   sendWelcomeEmail,
-} from "../mailtrap/emails.js";
+} from "../mail/email.js";
 
 export const signup = async (req, res) => {
   const { email, name, password } = req.body;
+  console.log("Signup request received:", { email, name });
 
   try {
     if (!email || !name || !password) {
@@ -202,10 +203,12 @@ export const resetPassword = async (req, res) => {
 
 export const checkAuth = async (req, res) => {
   try {
+    console.log("checkAuth: Checking auth for userId:", req.userId);
     const user = await User.findById(req.userId).select("-password");
     if (!user) {
+      console.log("checkAuth: User not found for userId:", req.userId);
       return res
-        .status(400)
+        .status(401)
         .json({ success: false, message: "User not found" });
     }
 
